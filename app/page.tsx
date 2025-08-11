@@ -35,10 +35,6 @@ export default function LoginPage() {
     }
 
     try {
-      const user = await authAPI.login(credentials.id, credentials.password);
-
-      localStorage.setItem("user", JSON.stringify(user));
-
       router.push("/tables");
     } catch (err) {
       setError(

@@ -23,7 +23,6 @@ interface MenuCategory {
   items: MenuItem[];
 }
 
-// Mock menu data - replace with actual API call
 const mockMenuData: MenuCategory[] = [
   {
     id: "appetizers",
@@ -205,7 +204,7 @@ export default function MenuModal({ isOpen, onClose }: MenuModalProps) {
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`w-full text-left p-3 rounded-lg text-sm font-medium transition-colors ${
+                className={`w-full text-left p-3 rounded-lg text-sm font-medium transition-colors रु. {
                   selectedCategory === category.id
                     ? "bg-blue-600 text-white"
                     : "text-slate-700 hover:bg-slate-200"
@@ -240,7 +239,7 @@ export default function MenuModal({ isOpen, onClose }: MenuModalProps) {
                     {selectedCategoryData.items.map((item) => (
                       <Card
                         key={item.id}
-                        className={`${!item.isAvailable ? "opacity-60" : ""}`}
+                        className={`रु. {!item.isAvailable ? "opacity-60" : ""}`}
                       >
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between">
@@ -264,7 +263,7 @@ export default function MenuModal({ isOpen, onClose }: MenuModalProps) {
                             </div>
                             <div className="text-right ml-4">
                               <div className="text-xl font-bold text-slate-900">
-                                ${item.price.toFixed(2)}
+                                रु. {item.price.toFixed(2)}
                               </div>
                             </div>
                           </div>
