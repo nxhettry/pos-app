@@ -2,8 +2,9 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,13 +16,29 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { authAPI } from "@/lib/api";
+import axios from "axios";
+import { LoginResponse } from "@/type/api-response";
+
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+if (!baseUrl)
+  throw new Error(
+    "NEXT_PUBLIC_API_BASE_URL is not defined in environment variables"
+  );
 
 export default function LoginPage() {
   const [credentials, setCredentials] = useState({ id: "", password: "" });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { isLoggedIn, login } = useAuth();
+
   const router = useRouter();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.replace("/tables");
+    }
+  }, [isLoggedIn, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +52,24 @@ export default function LoginPage() {
     }
 
     try {
-      router.push("/tables");
+      axios.defaults.withCredentials = true;
+      const response = await axios.post<LoginResponse>(
+        `${baseUrl}/auth/login`,
+        {
+          username: credentials.id,
+          password: credentials.password,
+        }
+      );
+
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error("Login failed. Please check your credentials.");
+      }
+
+      login({
+        id: response.data.data.user.id,
+        username: response.data.data.user.username,
+        role: response.data.data.user.role,
+      });
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Login failed. Please try again."

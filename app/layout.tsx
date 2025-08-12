@@ -2,6 +2,7 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Ubuntu } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/context/auth-context";
 
 const ubuntu = Ubuntu({
   subsets: ["latin"],
@@ -40,7 +41,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icon-192x192.png" />
       </head>
       <body className={`font-sans antialiased ${ubuntu.className}`}>
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
