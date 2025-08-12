@@ -18,8 +18,6 @@ export default function useTables() {
         axios.defaults.withCredentials = true;
         const res = await axios.get(`${baseUrl}/tables`);
 
-        console.log("tables data : ", res.data.data);
-
         return res.data.data;
       } catch (error) {
         toast.error("Error getting tables");
