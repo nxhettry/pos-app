@@ -30,23 +30,15 @@ export default function LoginPage() {
   const [credentials, setCredentials] = useState({ id: "", password: "" });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { isLoggedIn, login, isLoading: authLoading } = useAuth();
+  const { isLoggedIn, login } = useAuth();
 
   const router = useRouter();
 
   useEffect(() => {
-    if (!authLoading && isLoggedIn) {
+    if (isLoggedIn) {
       router.replace("/tables");
     }
-  }, [isLoggedIn, authLoading, router]);
-
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-        <div className="text-lg">Loading...</div>
-      </div>
-    );
-  }
+  }, [isLoggedIn, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,8 +70,6 @@ export default function LoginPage() {
         username: response.data.data.user.username,
         role: response.data.data.user.role,
       });
-
-      router.replace("/tables");
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Login failed. Please try again."

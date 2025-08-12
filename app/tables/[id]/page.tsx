@@ -19,6 +19,7 @@ import {
   ShoppingCart,
   Menu,
 } from "lucide-react";
+import useCart from "@/hooks/use-cart";
 
 interface MenuItem {
   id: number;
@@ -45,20 +46,6 @@ interface Cart {
   status: "open" | "closed" | "cancelled";
   items: CartItem[];
 }
-
-// Mock menu items - replace with actual API call
-const mockMenuItems: MenuItem[] = [
-  { id: 1, name: "Chicken Curry", price: 15.99, category: "Main Course" },
-  {
-    id: 2,
-    name: "Vegetable Fried Rice",
-    price: 12.99,
-    category: "Main Course",
-  },
-  { id: 3, name: "Caesar Salad", price: 8.99, category: "Appetizer" },
-  { id: 4, name: "Chocolate Cake", price: 6.99, category: "Dessert" },
-  { id: 5, name: "Fresh Juice", price: 4.99, category: "Beverage" },
-];
 
 function CartItemComponent({
   item,
@@ -256,6 +243,10 @@ export default function TableCartPage() {
   const [showMenu, setShowMenu] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
 
+  const { data: cartData, isLoading: isCartLoading } = useCart(tableId);
+
+  console.log("Cart data:", cartData);
+
   useEffect(() => {
     loadCartData();
   }, [tableId]);
@@ -411,7 +402,8 @@ export default function TableCartPage() {
                 Table {tableId}
               </h1>
               <p className="text-sm text-slate-600">
-                {cart?.items.length || 0} items • रु. {getTotalAmount().toFixed(2)}
+                {cart?.items.length || 0} items • रु.{" "}
+                {getTotalAmount().toFixed(2)}
               </p>
             </div>
             <Button
@@ -547,13 +539,5 @@ export default function TableCartPage() {
       {/* Menu Modal */}
       <MenuModal isOpen={showMenu} onClose={() => setShowMenu(false)} />
     </div>
-  );
-}
-
-function TableCartPageWithAuth() {
-  return (
-    <AuthGuard>
-      <TableCartPage />
-    </AuthGuard>
   );
 }
