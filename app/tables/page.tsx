@@ -103,23 +103,23 @@ function TableCard({ table }: { table: Table }) {
 }
 
 export default function TablesPage() {
-  const { userData, isLoggedIn, logout } = useAuth();
+  const { userData, isLoggedIn, logout, isLoading: authLoading } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
   const router = useRouter();
   const { data: tables, isLoading: isTablesLoading } = useTables();
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!authLoading && !isLoggedIn) {
       router.replace("/");
     }
-  }, [isLoggedIn, router]);
+  }, [isLoggedIn, authLoading, router]);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
+    router.replace("/");
   };
 
-  // Show skeleton while loading or if not logged in
-  if (isTablesLoading || !isLoggedIn) {
+  if (authLoading || isTablesLoading || !isLoggedIn) {
     return <TablesSkeleton />;
   }
 

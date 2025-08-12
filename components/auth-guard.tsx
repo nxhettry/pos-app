@@ -2,31 +2,23 @@
 
 import type React from "react";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/auth-context";
 
 interface AuthGuardProps {
   children: React.ReactNode;
 }
 
 export default function AuthGuard({ children }: AuthGuardProps) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { isLoggedIn, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    const checkAuth = () => {
-      const user = localStorage.getItem("user");
-      if (user) {
-        setIsAuthenticated(true);
-      } else {
-        router.push("/");
-      }
-      setIsLoading(false);
-    };
-
-    checkAuth();
-  }, [router]);
+    if (!isLoading && !isLoggedIn) {
+      router.push("/");
+    }
+  }, [isLoggedIn, isLoading, router]);
 
   if (isLoading) {
     return (
@@ -36,7 +28,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!isLoggedIn) {
     return null;
   }
 
