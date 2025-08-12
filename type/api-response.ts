@@ -13,3 +13,10 @@ export type LoginResponse = {
   message: string;
   status: boolean;
 };
+
+export type TablesResponse = {
+  statusCode: number;
+  data: any[];
+  message: string;
+  status: boolean;
+};

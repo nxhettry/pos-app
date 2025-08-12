@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import AuthGuard from "@/components/auth-guard";
 import MenuModal from "@/components/menu-modal";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users, Clock, CheckCircle, Menu } from "lucide-react";
+import { useAuth } from "@/context/auth-context";
+import useTables from "@/hooks/use-tables";
+import { TablesSkeleton } from "@/components/table-skeleton";
 
 interface Table {
   id: number;
@@ -17,39 +19,6 @@ interface Table {
   currentGuests?: number;
   reservedTime?: string;
 }
-
-const mockTables: Table[] = [
-  { id: 1, name: "Table 1", capacity: 4, status: "available" },
-  { id: 2, name: "Table 2", capacity: 2, status: "occupied", currentGuests: 2 },
-  {
-    id: 3,
-    name: "Table 3",
-    capacity: 6,
-    status: "reserved",
-    reservedTime: "7:30 PM",
-  },
-  { id: 4, name: "Table 4", capacity: 4, status: "available" },
-  { id: 5, name: "Table 5", capacity: 8, status: "occupied", currentGuests: 6 },
-  { id: 6, name: "Table 6", capacity: 2, status: "available" },
-  {
-    id: 7,
-    name: "Table 7",
-    capacity: 4,
-    status: "reserved",
-    reservedTime: "8:00 PM",
-  },
-  { id: 8, name: "Table 8", capacity: 6, status: "available" },
-  { id: 9, name: "Table 9", capacity: 4, status: "occupied", currentGuests: 3 },
-  { id: 10, name: "Table 10", capacity: 2, status: "available" },
-  { id: 11, name: "Table 11", capacity: 8, status: "available" },
-  {
-    id: 12,
-    name: "Table 12",
-    capacity: 4,
-    status: "occupied",
-    currentGuests: 4,
-  },
-];
 
 function TableCard({ table }: { table: Table }) {
   const router = useRouter();
@@ -134,25 +103,31 @@ function TableCard({ table }: { table: Table }) {
 }
 
 export default function TablesPage() {
-  const [tables, setTables] = useState<Table[]>([]);
-  const [user, setUser] = useState<{ id: string } | null>(null);
+  const { userData, isLoggedIn, logout } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
   const router = useRouter();
+  const { data: tables, isLoading: isTablesLoading } = useTables();
 
   useEffect(() => {
-    setTables(mockTables);
-  }, []);
+    if (!isLoggedIn) {
+      router.replace("/");
+    }
+  }, [isLoggedIn, router]);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    router.push("/");
+    logout();
   };
+
+  // Show skeleton while loading or if not logged in
+  if (isTablesLoading || !isLoggedIn) {
+    return <TablesSkeleton />;
+  }
 
   const getStatusCounts = () => {
     return {
-      available: tables.filter((t) => t.status === "available").length,
-      occupied: tables.filter((t) => t.status === "occupied").length,
-      reserved: tables.filter((t) => t.status === "reserved").length,
+      available: tables.filter((t: Table) => t.status === "available").length,
+      occupied: tables.filter((t: Table) => t.status === "occupied").length,
+      reserved: tables.filter((t: Table) => t.status === "reserved").length,
     };
   };
 
@@ -166,7 +141,9 @@ export default function TablesPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-slate-900">Rato-POS</h1>
-              <p className="text-sm text-slate-600">Welcome, {user?.id}</p>
+              <p className="text-sm text-slate-600">
+                Welcome, {userData?.username}
+              </p>
             </div>
             <Button
               variant="outline"
@@ -206,7 +183,7 @@ export default function TablesPage() {
       {/* Tables Grid */}
       <div className="px-4 pb-20">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {tables.map((table) => (
+          {tables.map((table: Table) => (
             <TableCard key={table.id} table={table} />
           ))}
         </div>
@@ -231,11 +208,3 @@ export default function TablesPage() {
     </div>
   );
 }
-
-// export default function TablesPageWithAuth() {
-//   return (
-//     <AuthGuard>
-//       <TablesPage />
-//     </AuthGuard>
-//   );
-// }
