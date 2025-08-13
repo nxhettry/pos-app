@@ -24,6 +24,7 @@ import {
 import useCart from "@/hooks/use-cart";
 import useMenu from "@/hooks/use-menu";
 import axios from "axios";
+import { CartItemSchema } from "@/schema/cart-schema";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -587,13 +588,19 @@ export default function TableCartPage() {
 
     setSaving(true);
     try {
-      console.log("Saving cart items:", cartItemsForAPI);
+      const parsed = CartItemSchema.safeParse(cartItemsForAPI);
+      if (!parsed.success) {
+        console.error("Validation errors found:", parsed.error);
+        setSaveMessage("Failed to save cart. Please try again.");
+        setTimeout(() => setSaveMessage(""), 3000);
+        return;
+      }
 
       const res = await axios.post(`${baseUrl}/add-to-cart`, {
         cartItemsForAPI,
       });
 
-      console.log("REsponse : ", res);
+      console.log("Response : ", res);
 
       if (res.status !== 200 && res.status !== 201) {
         setSaveMessage("Failed to save cart. Please try again.");

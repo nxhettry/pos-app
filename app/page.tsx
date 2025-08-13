@@ -31,6 +31,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { isLoggedIn, login } = useAuth();
+  const [viewPassword, setViewPassword] = useState(false);
 
   const router = useRouter();
 
@@ -108,21 +109,73 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={credentials.password}
-                onChange={(e) =>
-                  setCredentials((prev) => ({
-                    ...prev,
-                    password: e.target.value,
-                  }))
-                }
-                className="h-12"
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={viewPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={credentials.password}
+                  onChange={(e) =>
+                    setCredentials((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    }))
+                  }
+                  className="h-12 pr-12"
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setViewPassword((prev) => !prev)}
+                  tabIndex={-1}
+                  className="absolute inset-y-0 right-2 flex items-center px-2 text-slate-500 hover:text-slate-900 focus:outline-none"
+                  aria-label={viewPassword ? "Hide password" : "Show password"}
+                >
+                  {viewPassword ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10 0-1.657.336-3.234.938-4.675M6.343 6.343A8.962 8.962 0 003 9c0 4.418 3.582 8 8 8 1.657 0 3.234-.336 4.675-.938M17.657 17.657A8.962 8.962 0 0021 15c0-4.418-3.582-8-8-8-1.657 0-3.234.336-4.675.938M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 3l18 18"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-.274.832-.642 1.627-1.09 2.357M15.535 15.535A6.978 6.978 0 0112 17c-3.314 0-6-2.686-6-6 0-.828.167-1.617.465-2.357"
+                      />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
 
             {error && (
