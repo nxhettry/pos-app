@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   ArrowLeft,
   Plus,
@@ -69,6 +70,37 @@ interface Cart {
   userId: number;
   status: "open" | "closed" | "cancelled";
   items: CartItem[];
+}
+
+function CartSkeleton() {
+  return (
+    <div className="px-4 py-4 space-y-4">
+      {[1, 2, 3].map((i) => (
+        <Card key={i} className="mb-4">
+          <CardContent className="p-4">
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex-1">
+                <Skeleton className="h-6 w-32 mb-2" />
+                <Skeleton className="h-4 w-20" />
+              </div>
+              <Skeleton className="h-8 w-8 rounded" />
+            </div>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-8 w-8" />
+                <Skeleton className="h-8 w-20" />
+                <Skeleton className="h-8 w-8" />
+              </div>
+              <div className="flex-1 text-right">
+                <Skeleton className="h-6 w-16 ml-auto" />
+              </div>
+            </div>
+            <Skeleton className="h-16 w-full" />
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
 }
 
 function CartItemComponent({
@@ -449,13 +481,48 @@ export default function TableCartPage() {
 
   useEffect(() => {
     if (!isCartLoading) {
-      if (cartData && cartData.items && Array.isArray(cartData.items)) {
-        const validatedCart: Cart = {
-          ...cartData,
-          items: cartData.items.filter((item: CartItem) => item.menuItem) || [],
+      if (cartData && Array.isArray(cartData) && cartData.length > 0) {
+        // Get the first (and should be only) cart for this table
+        const serverCart = cartData[0];
+        const transformedCart: Cart = {
+          id: serverCart.id,
+          tableId: serverCart.tableId,
+          userId: 1, // Default user ID
+          status: serverCart.status as "open" | "closed" | "cancelled",
+          items: serverCart.CartItems
+            ? serverCart.CartItems.map((item) => ({
+                id: item.id,
+                cartId: item.cartId,
+                itemId: item.itemId,
+                quantity: item.quantity,
+                rate: item.rate,
+                totalPrice: item.totalPrice,
+                notes: item.notes || "",
+                menuItem: {
+                  id: item.MenuItem.id,
+                  itemName: item.MenuItem.itemName,
+                  categoryId: item.MenuItem.categoryId,
+                  rate: item.MenuItem.rate,
+                  description: item.MenuItem.description,
+                  image: item.MenuItem.image,
+                  isAvailable: item.MenuItem.isAvailable,
+                  createdAt: item.MenuItem.createdAt,
+                  updatedAt: item.MenuItem.updatedAt,
+                  MenuCategory: {
+                    id: item.MenuItem.categoryId,
+                    name: "", // This will need to be filled from menu data
+                    description: null,
+                    isActive: true,
+                    createdAt: "",
+                    updatedAt: "",
+                  },
+                },
+              }))
+            : [],
         };
-        setCart(validatedCart);
+        setCart(transformedCart);
       } else {
+        // No cart data, create empty cart
         const emptyCart: Cart = {
           tableId,
           userId: 1,
@@ -575,32 +642,30 @@ export default function TableCartPage() {
       return;
     }
 
-    const cartItemsForAPI = cart.items.map((item) => ({
-      cartId: cart.id || null,
-      menuItemId: item.itemId,
-      quantity: item.quantity,
-      rate: item.rate,
-      totalPrice: item.totalPrice,
-      notes: item.notes || null,
-
-      ...(item.id && { id: item.id }),
-    }));
+    const cartDataForAPI = {
+      cartId: cart.id || undefined,
+      tableId: tableId,
+      items: cart.items.map((item) => ({
+        itemId: item.itemId,
+        quantity: item.quantity,
+        rate: item.rate,
+        totalPrice: item.totalPrice,
+        notes: item.notes || undefined,
+      })),
+    };
 
     setSaving(true);
     try {
-      const parsed = CartItemSchema.safeParse(cartItemsForAPI);
+      const parsed = CartItemSchema.safeParse(cartDataForAPI);
       if (!parsed.success) {
-        console.error("Validation errors found:", parsed.error);
-        setSaveMessage("Failed to save cart. Please try again.");
+        console.error("Validation errors found:", parsed.error.format());
+        setSaveMessage("Invalid cart data. Please check all required fields.");
         setTimeout(() => setSaveMessage(""), 3000);
         return;
       }
+      axios.defaults.withCredentials = true;
 
-      const res = await axios.post(`${baseUrl}/add-to-cart`, {
-        cartItemsForAPI,
-      });
-
-      console.log("Response : ", res);
+      const res = await axios.post(`${baseUrl}/cart`, parsed.data);
 
       if (res.status !== 200 && res.status !== 201) {
         setSaveMessage("Failed to save cart. Please try again.");
@@ -629,9 +694,35 @@ export default function TableCartPage() {
 
   if (isCartLoading || !cart) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading cart...</div>
-      </div>
+      <AuthGuard>
+        <div className="min-h-screen bg-slate-50 pb-32">
+          {/* Header Skeleton */}
+          <div className="bg-white shadow-sm border-b sticky top-0 z-40">
+            <div className="px-4 py-4">
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => router.back()}
+                  className="p-2"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
+                <div className="flex-1">
+                  <h1 className="text-xl font-bold text-slate-900">
+                    Table {tableId}
+                  </h1>
+                  <Skeleton className="h-4 w-32 mt-1" />
+                </div>
+                <Skeleton className="h-8 w-20" />
+              </div>
+            </div>
+          </div>
+
+          {/* Cart Items Skeleton */}
+          <CartSkeleton />
+        </div>
+      </AuthGuard>
     );
   }
 

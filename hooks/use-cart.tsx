@@ -1,4 +1,5 @@
 "use client";
+import { CartResponse } from "@/type/api-response";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
@@ -16,9 +17,9 @@ export default function useCart(tableId: number) {
     queryFn: async () => {
       try {
         axios.defaults.withCredentials = true;
-        const res = await axios.get(`${baseUrl}/cart/table/${tableId}`);
-
-        console.log("cart data : ", res.data.data);
+        const res = await axios.get<CartResponse>(
+          `${baseUrl}/cart/table/${tableId}`
+        );
 
         return res.data.data;
       } catch (error) {
