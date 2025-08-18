@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import axios from "axios";
 import { LoginResponse } from "@/type/api-response";
+import { getUserIdFromLocalStorage } from "@/lib/utils";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -53,12 +54,15 @@ export default function LoginPage() {
     }
 
     try {
-      axios.defaults.withCredentials = true;
+      const userId = getUserIdFromLocalStorage();
       const response = await axios.post<LoginResponse>(
         `${baseUrl}/auth/login`,
         {
           username: credentials.id,
           password: credentials.password,
+        },
+        {
+          headers: userId ? { userId } : {},
         }
       );
 

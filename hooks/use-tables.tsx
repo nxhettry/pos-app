@@ -1,4 +1,6 @@
 "use client";
+import { getUserIdFromLocalStorage } from "@/lib/utils";
+import { TablesResponse } from "@/type/api-response";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
@@ -15,8 +17,11 @@ export default function useTables() {
     queryKey: ["tables"],
     queryFn: async () => {
       try {
-        axios.defaults.withCredentials = true;
-        const res = await axios.get(`${baseUrl}/tables`);
+        const userId = getUserIdFromLocalStorage();
+
+        const res = await axios.get<TablesResponse>(`${baseUrl}/tables`, {
+          headers: userId ? { userId } : {},
+        });
 
         return res.data.data;
       } catch (error) {

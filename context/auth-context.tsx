@@ -33,27 +33,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-  const checkAuth = React.useCallback(async () => {
-    if (!baseUrl) return;
-
+  const getStoredUser = () => {
     try {
-      const response = await fetch(`${baseUrl}/auth/me`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const item = localStorage.getItem("posapp_user");
+      if (!item) return null;
+      const { user, expiry } = JSON.parse(item);
+      if (!user || !expiry) return null;
+      if (Date.now() > expiry) {
+        localStorage.removeItem("posapp_user");
+        return null;
+      }
+      return user;
+    } catch {
+      return null;
+    }
+  };
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.data && data.data.user) {
-          setUserData(data.data.user);
-          setIsLoggedIn(true);
-        } else {
-          setIsLoggedIn(false);
-          setUserData(null);
-        }
+  const checkAuth = React.useCallback(async () => {
+    try {
+      const user = getStoredUser();
+      if (user) {
+        setIsLoggedIn(true);
+        setUserData(user);
       } else {
         setIsLoggedIn(false);
         setUserData(null);
@@ -63,7 +64,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setIsLoggedIn(false);
       setUserData(null);
     }
-  }, [baseUrl]);
+  }, []);
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -78,25 +79,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const login = (user: User) => {
     setIsLoggedIn(true);
     setUserData(user);
+    const expiry = Date.now() + 8 * 60 * 60 * 1000;
+    localStorage.setItem("posapp_user", JSON.stringify({ user, expiry }));
   };
 
   const logout = async () => {
-    try {
-      if (baseUrl) {
-        await fetch(`${baseUrl}/auth/logout`, {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-      }
-    } catch (error) {
-      console.error("Logout request failed:", error);
-    } finally {
-      setIsLoggedIn(false);
-      setUserData(null);
-    }
+    setIsLoggedIn(false);
+    setUserData(null);
+    localStorage.removeItem("posapp_user");
   };
 
   return (

@@ -14,8 +14,7 @@ import { TablesSkeleton } from "@/components/table-skeleton";
 interface Table {
   id: number;
   name: string;
-  capacity: number;
-  status: "available" | "occupied" | "reserved";
+  status: "available" | "occupied" | "reserved" | "unavailable";
   currentGuests?: number;
   reservedTime?: string;
 }
@@ -78,11 +77,6 @@ function TableCard({ table }: { table: Table }) {
         </div>
 
         <div className="space-y-2 text-sm text-slate-600">
-          <div className="flex items-center justify-between">
-            <span>Capacity:</span>
-            <span className="font-medium">{table.capacity} guests</span>
-          </div>
-
           {table.status === "occupied" && table.currentGuests && (
             <div className="flex items-center justify-between">
               <span>Current:</span>
@@ -125,9 +119,9 @@ export default function TablesPage() {
 
   const getStatusCounts = () => {
     return {
-      available: tables.filter((t: Table) => t.status === "available").length,
-      occupied: tables.filter((t: Table) => t.status === "occupied").length,
-      reserved: tables.filter((t: Table) => t.status === "reserved").length,
+      available: tables?.filter((t: Table) => t.status === "available").length,
+      occupied: tables?.filter((t: Table) => t.status === "occupied").length,
+      reserved: tables?.filter((t: Table) => t.status === "reserved").length,
     };
   };
 
@@ -183,7 +177,7 @@ export default function TablesPage() {
       {/* Tables Grid */}
       <div className="px-4 pb-20">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {tables.map((table: Table) => (
+          {tables?.map((table: Table) => (
             <TableCard key={table.id} table={table} />
           ))}
         </div>

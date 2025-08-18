@@ -1,150 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import useMenu from "@/hooks/use-menu";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { X, Search } from "lucide-react";
-
-interface MenuItem {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  isAvailable: boolean;
-  image?: string;
-}
-
-interface MenuCategory {
-  id: string;
-  name: string;
-  items: MenuItem[];
-}
-
-const mockMenuData: MenuCategory[] = [
-  {
-    id: "appetizers",
-    name: "Appetizers",
-    items: [
-      {
-        id: 1,
-        name: "Caesar Salad",
-        description: "Fresh romaine lettuce with parmesan cheese and croutons",
-        price: 8.99,
-        category: "Appetizers",
-        isAvailable: true,
-      },
-      {
-        id: 2,
-        name: "Chicken Wings",
-        description: "Spicy buffalo wings served with ranch dressing",
-        price: 12.99,
-        category: "Appetizers",
-        isAvailable: true,
-      },
-      {
-        id: 3,
-        name: "Mozzarella Sticks",
-        description: "Golden fried mozzarella with marinara sauce",
-        price: 9.99,
-        category: "Appetizers",
-        isAvailable: false,
-      },
-    ],
-  },
-  {
-    id: "main-course",
-    name: "Main Course",
-    items: [
-      {
-        id: 4,
-        name: "Chicken Curry",
-        description: "Traditional curry with basmati rice and naan bread",
-        price: 15.99,
-        category: "Main Course",
-        isAvailable: true,
-      },
-      {
-        id: 5,
-        name: "Vegetable Fried Rice",
-        description: "Wok-fried rice with mixed vegetables and soy sauce",
-        price: 12.99,
-        category: "Main Course",
-        isAvailable: true,
-      },
-      {
-        id: 6,
-        name: "Grilled Salmon",
-        description: "Fresh Atlantic salmon with lemon butter sauce",
-        price: 18.99,
-        category: "Main Course",
-        isAvailable: true,
-      },
-      {
-        id: 7,
-        name: "Beef Steak",
-        description: "8oz ribeye steak with garlic mashed potatoes",
-        price: 24.99,
-        category: "Main Course",
-        isAvailable: false,
-      },
-    ],
-  },
-  {
-    id: "desserts",
-    name: "Desserts",
-    items: [
-      {
-        id: 8,
-        name: "Chocolate Cake",
-        description: "Rich chocolate cake with vanilla ice cream",
-        price: 6.99,
-        category: "Desserts",
-        isAvailable: true,
-      },
-      {
-        id: 9,
-        name: "Tiramisu",
-        description: "Classic Italian dessert with coffee and mascarpone",
-        price: 7.99,
-        category: "Desserts",
-        isAvailable: true,
-      },
-    ],
-  },
-  {
-    id: "beverages",
-    name: "Beverages",
-    items: [
-      {
-        id: 10,
-        name: "Fresh Orange Juice",
-        description: "Freshly squeezed orange juice",
-        price: 4.99,
-        category: "Beverages",
-        isAvailable: true,
-      },
-      {
-        id: 11,
-        name: "Coffee",
-        description: "Freshly brewed coffee",
-        price: 2.99,
-        category: "Beverages",
-        isAvailable: true,
-      },
-      {
-        id: 12,
-        name: "Soft Drinks",
-        description: "Coca-Cola, Pepsi, Sprite, Fanta",
-        price: 2.49,
-        category: "Beverages",
-        isAvailable: true,
-      },
-    ],
-  },
-];
 
 interface MenuModalProps {
   isOpen: boolean;
@@ -152,24 +14,82 @@ interface MenuModalProps {
 }
 
 export default function MenuModal({ isOpen, onClose }: MenuModalProps) {
-  const [selectedCategory, setSelectedCategory] =
-    useState<string>("appetizers");
+  const { data: menuData, isLoading, isError } = useMenu();
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  if (!isOpen) return null;
+  const categories = useMemo(() => {
+    if (!menuData) return [];
+    return menuData.map(
+      (cat: {
+        category: {
+          name: string;
+          items: Array<{
+            id: number;
+            itemName: string;
+            description: string | null;
+            rate: number;
+            isAvailable: boolean;
+          }>;
+        };
+      }) => ({
+        id: cat.category.name,
+        name: cat.category.name,
+        items: cat.category.items.map((item) => ({
+          id: item.id,
+          name: item.itemName,
+          description: item.description || "",
+          price: item.rate,
+          isAvailable: item.isAvailable,
+        })),
+      })
+    );
+  }, [menuData]);
 
-  const filteredCategories = mockMenuData.map((category) => ({
-    ...category,
-    items: category.items.filter(
-      (item) =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchQuery.toLowerCase())
-    ),
-  }));
+  useEffect(() => {
+    if (categories.length && !selectedCategory) {
+      setSelectedCategory(categories[0].id);
+    }
+  }, [categories, selectedCategory]);
+
+  const filteredCategories = useMemo(
+    () =>
+      categories.map((category) => ({
+        ...category,
+        items: category.items.filter(
+          (item) =>
+            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.description.toLowerCase().includes(searchQuery.toLowerCase())
+        ),
+      })),
+    [categories, searchQuery]
+  );
 
   const selectedCategoryData = filteredCategories.find(
     (cat) => cat.id === selectedCategory
   );
+
+  if (!isOpen) return null;
+
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-8 rounded shadow text-center">
+          Loading menu...
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !categories.length) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-8 rounded shadow text-center">
+          Failed to load menu.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-col z-50">
@@ -204,7 +124,7 @@ export default function MenuModal({ isOpen, onClose }: MenuModalProps) {
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`w-full text-left p-3 rounded-lg text-sm font-medium transition-colors रु. {
+                className={`w-full text-left p-3 rounded-lg text-sm font-medium transition-colors ${
                   selectedCategory === category.id
                     ? "bg-blue-600 text-white"
                     : "text-slate-700 hover:bg-slate-200"
@@ -236,40 +156,48 @@ export default function MenuModal({ isOpen, onClose }: MenuModalProps) {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {selectedCategoryData.items.map((item) => (
-                      <Card
-                        key={item.id}
-                        className={`रु. {!item.isAvailable ? "opacity-60" : ""}`}
-                      >
-                        <CardContent className="p-4">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-semibold text-lg text-slate-900">
-                                  {item.name}
-                                </h3>
-                                {!item.isAvailable && (
-                                  <Badge
-                                    variant="outline"
-                                    className="text-red-600 border-red-200"
-                                  >
-                                    Out of Stock
-                                  </Badge>
-                                )}
+                    {selectedCategoryData.items.map(
+                      (item: {
+                        id: number;
+                        name: string;
+                        description: string;
+                        price: number;
+                        isAvailable: boolean;
+                      }) => (
+                        <Card
+                          key={item.id}
+                          className={!item.isAvailable ? "opacity-60" : ""}
+                        >
+                          <CardContent className="p-4">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h3 className="font-semibold text-lg text-slate-900">
+                                    {item.name}
+                                  </h3>
+                                  {!item.isAvailable && (
+                                    <Badge
+                                      variant="outline"
+                                      className="text-red-600 border-red-200"
+                                    >
+                                      Out of Stock
+                                    </Badge>
+                                  )}
+                                </div>
+                                <p className="text-sm text-slate-600 mb-2">
+                                  {item.description}
+                                </p>
                               </div>
-                              <p className="text-sm text-slate-600 mb-2">
-                                {item.description}
-                              </p>
-                            </div>
-                            <div className="text-right ml-4">
-                              <div className="text-xl font-bold text-slate-900">
-                                रु. {item.price.toFixed(2)}
+                              <div className="text-right ml-4">
+                                <div className="text-xl font-bold text-slate-900">
+                                  रु. {item.price.toFixed(2)}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                          </CardContent>
+                        </Card>
+                      )
+                    )}
                   </div>
                 )}
               </>
