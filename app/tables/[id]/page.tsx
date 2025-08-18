@@ -491,39 +491,43 @@ export default function TableCartPage() {
           userId: 1, // Default user ID
           status: serverCart.status as "open" | "closed" | "cancelled",
           items: serverCart.CartItems
-            ? serverCart.CartItems.map((item) => ({
-                id: item.id,
-                cartId: item.cartId,
-                itemId: item.itemId,
-                quantity: item.quantity,
-                rate: item.rate,
-                totalPrice: item.totalPrice,
-                notes: item.notes || "",
-                menuItem: {
-                  id: item.MenuItem.id,
-                  itemName: item.MenuItem.itemName,
-                  categoryId: item.MenuItem.categoryId,
-                  rate: item.MenuItem.rate,
-                  description: item.MenuItem.description,
-                  image: item.MenuItem.image,
-                  isAvailable: item.MenuItem.isAvailable,
-                  createdAt: item.MenuItem.createdAt,
-                  updatedAt: item.MenuItem.updatedAt,
-                  MenuCategory: {
-                    id: item.MenuItem.categoryId,
-                    name: "", // This will need to be filled from menu data
-                    description: null,
-                    isActive: true,
-                    createdAt: "",
-                    updatedAt: "",
-                  },
-                },
-              }))
+            ? serverCart.CartItems
+                .filter((item) => item.Item || item.MenuItem)
+                .map((item) => {
+                  const menu = item.Item || item.MenuItem;
+                  return {
+                    id: item.id,
+                    cartId: item.cartId,
+                    itemId: item.itemId,
+                    quantity: item.quantity,
+                    rate: item.rate,
+                    totalPrice: item.totalPrice,
+                    notes: item.notes || "",
+                    menuItem: {
+                      id: menu.id,
+                      itemName: menu.itemName,
+                      categoryId: menu.categoryId,
+                      rate: menu.rate,
+                      description: menu.description,
+                      image: menu.image,
+                      isAvailable: menu.isAvailable,
+                      createdAt: menu.createdAt,
+                      updatedAt: menu.updatedAt,
+                      MenuCategory: {
+                        id: menu.categoryId,
+                        name: "", 
+                        description: null,
+                        isActive: true,
+                        createdAt: "",
+                        updatedAt: "",
+                      },
+                    },
+                  };
+                })
             : [],
         };
         setCart(transformedCart);
       } else {
-        // No cart data, create empty cart
         const emptyCart: Cart = {
           tableId,
           userId: 1,

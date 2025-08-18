@@ -96,6 +96,7 @@ export interface CartItem {
   notes: string | null;
   createdAt: string;
   MenuItem: MenuItem;
+  Item?: MenuItem;
 }
 
 export interface MenuItem {
