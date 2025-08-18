@@ -96,6 +96,12 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+
+          <Alert variant="default" className="mb-4">
+            <AlertDescription>
+              <span className="font-medium">Info:</span> Please ensure <span className="font-semibold">Tailscale VPN</span> is turned on before logging in to use the restaurant system.
+            </AlertDescription>
+          </Alert>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="id">Username</Label>
