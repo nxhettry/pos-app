@@ -27,6 +27,7 @@ import useMenu from "@/hooks/use-menu";
 import axios from "axios";
 import { CartItemSchema } from "@/schema/cart-schema";
 import { getUserIdFromLocalStorage } from "@/lib/utils";
+import { TransferOrderButton } from "./transfer-button";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -488,42 +489,42 @@ export default function TableCartPage() {
         const transformedCart: Cart = {
           id: serverCart.id,
           tableId: serverCart.tableId,
-          userId: 1, // Default user ID
+          userId: 1,
           status: serverCart.status as "open" | "closed" | "cancelled",
           items: serverCart.CartItems
-            ? serverCart.CartItems
-                .filter((item) => item.Item || item.MenuItem)
-                .map((item) => {
-                  const menu = item.Item || item.MenuItem;
-                  return {
-                    id: item.id,
-                    cartId: item.cartId,
-                    itemId: item.itemId,
-                    quantity: item.quantity,
-                    rate: item.rate,
-                    totalPrice: item.totalPrice,
-                    notes: item.notes || "",
-                    menuItem: {
-                      id: menu.id,
-                      itemName: menu.itemName,
-                      categoryId: menu.categoryId,
-                      rate: menu.rate,
-                      description: menu.description,
-                      image: menu.image,
-                      isAvailable: menu.isAvailable,
-                      createdAt: menu.createdAt,
-                      updatedAt: menu.updatedAt,
-                      MenuCategory: {
-                        id: menu.categoryId,
-                        name: "", 
-                        description: null,
-                        isActive: true,
-                        createdAt: "",
-                        updatedAt: "",
-                      },
+            ? serverCart.CartItems.filter(
+                (item) => item.Item || item.MenuItem
+              ).map((item) => {
+                const menu = item.Item || item.MenuItem;
+                return {
+                  id: item.id,
+                  cartId: item.cartId,
+                  itemId: item.itemId,
+                  quantity: item.quantity,
+                  rate: item.rate,
+                  totalPrice: item.totalPrice,
+                  notes: item.notes || "",
+                  menuItem: {
+                    id: menu.id,
+                    itemName: menu.itemName,
+                    categoryId: menu.categoryId,
+                    rate: menu.rate,
+                    description: menu.description,
+                    image: menu.image,
+                    isAvailable: menu.isAvailable,
+                    createdAt: menu.createdAt,
+                    updatedAt: menu.updatedAt,
+                    MenuCategory: {
+                      id: menu.categoryId,
+                      name: "",
+                      description: null,
+                      isActive: true,
+                      createdAt: "",
+                      updatedAt: "",
                     },
-                  };
-                })
+                  },
+                };
+              })
             : [],
         };
         setCart(transformedCart);
@@ -758,6 +759,11 @@ export default function TableCartPage() {
                   {getTotalAmount().toFixed(2)}
                 </p>
               </div>
+
+              <TransferOrderButton
+                sourceTableId={tableId}
+              />
+
               <Button
                 onClick={() => setShowAddModal(true)}
                 size="sm"
