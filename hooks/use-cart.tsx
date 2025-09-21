@@ -3,7 +3,7 @@ import { CartResponse } from "@/type/api-response";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
-import { getUserIdFromLocalStorage } from "@/lib/utils";
+import { getUserFromLocalStorage } from "@/lib/utils";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -17,13 +17,12 @@ export default function useCart(tableId: number) {
     queryKey: ["cart", tableId],
     queryFn: async () => {
       try {
-        const userId = getUserIdFromLocalStorage();
-
+        const userId = getUserFromLocalStorage();
 
         const res = await axios.get<CartResponse>(
           `${baseUrl}/cart/table/${tableId}`,
           {
-            headers: userId ? { userId } : {},
+            headers: userId ? { userId: userId.id } : {},
           }
         );
 

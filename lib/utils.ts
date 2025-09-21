@@ -1,4 +1,7 @@
-export function getUserIdFromLocalStorage(): string | null {
+export function getUserFromLocalStorage(): {
+  id: string;
+  username: string;
+} | null {
   try {
     const item = localStorage.getItem("posapp_user");
 
@@ -17,7 +20,10 @@ export function getUserIdFromLocalStorage(): string | null {
       return null;
     }
 
-    return String(user.id);
+    return {
+      id: user.id,
+      username: user.username,
+    };
   } catch (error) {
     console.error("Error getting user ID from localStorage:", error);
     return null;

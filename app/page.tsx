@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import axios from "axios";
 import { LoginResponse } from "@/type/api-response";
-import { getUserIdFromLocalStorage } from "@/lib/utils";
+import { getUserFromLocalStorage } from "@/lib/utils";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -54,7 +54,7 @@ export default function LoginPage() {
     }
 
     try {
-      const userId = getUserIdFromLocalStorage();
+      const userId = getUserFromLocalStorage();
       const response = await axios.post<LoginResponse>(
         `${baseUrl}/auth/login`,
         {
@@ -62,7 +62,7 @@ export default function LoginPage() {
           password: credentials.password,
         },
         {
-          headers: userId ? { userId } : {},
+          headers: userId ? { userId: userId.id } : {},
         }
       );
 
@@ -96,10 +96,11 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-
           <Alert variant="default" className="mb-4">
             <AlertDescription>
-              <span className="font-medium">Info:</span> Please ensure <span className="font-semibold">Tailscale VPN</span> is turned on before logging in to use the restaurant system.
+              <span className="font-medium">Info:</span> Please ensure{" "}
+              <span className="font-semibold">Tailscale VPN</span> is turned on
+              before logging in to use the restaurant system.
             </AlertDescription>
           </Alert>
           <form onSubmit={handleLogin} className="space-y-4">

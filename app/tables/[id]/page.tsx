@@ -26,7 +26,7 @@ import useCart from "@/hooks/use-cart";
 import useMenu from "@/hooks/use-menu";
 import axios from "axios";
 import { CartItemSchema } from "@/schema/cart-schema";
-import { getUserIdFromLocalStorage } from "@/lib/utils";
+import { getUserFromLocalStorage } from "@/lib/utils";
 import { TransferOrderButton } from "./transfer-button";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -670,10 +670,11 @@ export default function TableCartPage() {
         return;
       }
 
-      const userId = getUserIdFromLocalStorage();
+      const user = getUserFromLocalStorage();
+      console.log("User ID from localStorage:", user);
 
       const res = await axios.post(`${baseUrl}/cart`, parsed.data, {
-        headers: userId ? { userId } : {},
+        headers: user ? { userId: user.id, username: user.username } : {},
       });
 
       if (res.status !== 200 && res.status !== 201) {
@@ -760,9 +761,7 @@ export default function TableCartPage() {
                 </p>
               </div>
 
-              <TransferOrderButton
-                sourceTableId={tableId}
-              />
+              <TransferOrderButton sourceTableId={tableId} />
 
               <Button
                 onClick={() => setShowAddModal(true)}
