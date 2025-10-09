@@ -66,6 +66,8 @@ export default function LoginPage() {
         }
       );
 
+      console.log("REsponse : ", response)
+
       if (response.status !== 200 && response.status !== 201) {
         throw new Error("Login failed. Please check your credentials.");
       }
