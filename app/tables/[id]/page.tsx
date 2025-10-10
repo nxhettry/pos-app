@@ -28,6 +28,7 @@ import axios from "axios";
 import { CartItemSchema } from "@/schema/cart-schema";
 import { getUserFromLocalStorage } from "@/lib/utils";
 import { TransferOrderButton } from "./transfer-button";
+import { MergeOrderButton } from "./merge-button";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -761,7 +762,10 @@ export default function TableCartPage() {
                 </p>
               </div>
 
-              <TransferOrderButton sourceTableId={tableId} />
+              <div className="flex flex-col gap-2">
+                <TransferOrderButton sourceTableId={tableId} />
+                <MergeOrderButton sourceTableId={tableId} />
+              </div>
 
               <Button
                 onClick={() => setShowAddModal(true)}
