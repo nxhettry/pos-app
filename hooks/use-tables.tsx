@@ -19,7 +19,8 @@ export default function useTables() {
       try {
         const userId = getUserFromLocalStorage();
 
-        const res = await axios.get<TablesResponse>(`${baseUrl}/tables`, {
+        axios.defaults.withCredentials = true;
+        const res = await axios.get<TablesResponse>(`${baseUrl}/table`, {
           headers: userId ? { userId: userId.id } : {},
         });
 

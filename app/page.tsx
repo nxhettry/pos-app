@@ -55,6 +55,7 @@ export default function LoginPage() {
 
     try {
       const userId = getUserFromLocalStorage();
+      axios.defaults.withCredentials = true;
       const response = await axios.post<LoginResponse>(
         `${baseUrl}/auth/login`,
         {
@@ -65,8 +66,6 @@ export default function LoginPage() {
           headers: userId ? { userId: userId.id } : {},
         }
       );
-
-      console.log("REsponse : ", response)
 
       if (response.status !== 200 && response.status !== 201) {
         throw new Error("Login failed. Please check your credentials.");
@@ -91,10 +90,10 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-2">
           <CardTitle className="text-3xl font-bold text-slate-900">
-            Rato-POS
+            Restrofuel
           </CardTitle>
           <CardDescription className="text-slate-600">
-            Restaurant Point of Sale System
+            Restaurant Management System
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -123,6 +122,7 @@ export default function LoginPage() {
 
             <div className="space-y-2">
               <div className="relative">
+                <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
                   type={viewPassword ? "text" : "password"}

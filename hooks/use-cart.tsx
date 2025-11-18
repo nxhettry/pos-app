@@ -19,6 +19,8 @@ export default function useCart(tableId: number) {
       try {
         const userId = getUserFromLocalStorage();
 
+        axios.defaults.withCredentials = true;
+
         const res = await axios.get<CartResponse>(
           `${baseUrl}/cart/table/${tableId}`,
           {
@@ -33,5 +35,6 @@ export default function useCart(tableId: number) {
       }
     },
     refetchOnWindowFocus: false,
+    retry: 1,
   });
 }

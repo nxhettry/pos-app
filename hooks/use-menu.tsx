@@ -16,6 +16,9 @@ export default function useMenu() {
     queryKey: ["menu"],
     queryFn: async () => {
       try {
+
+        axios.defaults.withCredentials = true;
+
         const [categoriesRes, itemsRes] = await Promise.all([
           axios.get<CategoryResponse>(`${baseUrl}/menu/categories/`),
           axios.get<ItemResponse>(`${baseUrl}/menu/items/`),

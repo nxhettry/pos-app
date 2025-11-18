@@ -224,24 +224,31 @@ function AddItemModal({
   }
 
   const categories = menuData.map((item) => item.category);
-  const allItems = menuData.flatMap((item) => item.category.items);
 
-  const filteredItems = allItems.filter(
-    (item) =>
-      item.isAvailable &&
-      (searchQuery === "" ||
-        item.itemName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.MenuCategory.name
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()))
+  const allItems = menuData.flatMap((m) =>
+    m.category.items.map((item) => ({
+      ...item,
+      MenuCategory: item.MenuCategory || { name: m.category.name },
+    }))
   );
 
-  const displayItems = selectedCategory
-    ? filteredItems.filter(
-        (item) => item.MenuCategory.name === selectedCategory
-      )
-    : filteredItems;
+  let itemsToDisplay = allItems;
+
+  if (selectedCategory) {
+    const categoryData = menuData.find(
+      (c) => c.category.name === selectedCategory
+    );
+    itemsToDisplay = categoryData ? categoryData.category.items : [];
+  }
+
+  const filteredItems = itemsToDisplay.filter((item) => {
+    const matchesSearch =
+      searchQuery === "" ||
+      item.itemName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return item.isAvailable && matchesSearch;
+  });
 
   const toggleItemSelection = (item: MenuItem) => {
     const newSelected = new Map(selectedItems);
@@ -279,10 +286,7 @@ function AddItemModal({
       onAddMultipleItems(itemsToAdd);
     }
 
-    setSelectedItems(new Map());
-    setSearchQuery("");
-    setSelectedCategory(null);
-    onClose();
+    handleClose();
   };
 
   const handleClose = () => {
@@ -329,7 +333,7 @@ function AddItemModal({
           <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
             <Input
-              placeholder="Search items across all categories..."
+              placeholder="Search items..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -346,7 +350,7 @@ function AddItemModal({
               All Categories (
               {allItems.filter((item) => item.isAvailable).length})
             </Button>
-            {categories.map((category) => (
+            {categories?.map((category) => (
               <Button
                 key={category.name}
                 variant={
@@ -365,13 +369,15 @@ function AddItemModal({
       </div>
 
       <div className="flex-1 overflow-y-auto bg-slate-50 px-4 py-4">
-        {displayItems.length === 0 ? (
+        {filteredItems.length === 0 ? (
           <div className="text-center py-12 text-slate-500">
-            {searchQuery ? "No items match your search" : "No available items"}
+            {searchQuery
+              ? "No items match your search"
+              : "No available items in this category"}
           </div>
         ) : (
           <div className="space-y-3">
-            {displayItems.map((item) => {
+            {filteredItems.map((item) => {
               const quantity = selectedItems.get(item.id) || 0;
               const isSelected = quantity > 0;
 
@@ -392,9 +398,12 @@ function AddItemModal({
                           <h3 className="font-semibold text-lg text-slate-900">
                             {item.itemName}
                           </h3>
-                          <Badge variant="secondary" className="text-xs">
-                            {item.MenuCategory.name}
-                          </Badge>
+                          {/* Display category name if available, helps when in "All" view */}
+                          {item.MenuCategory?.name && (
+                            <Badge variant="secondary" className="text-xs">
+                              {item.MenuCategory.name}
+                            </Badge>
+                          )}
                         </div>
                         {item.description && (
                           <p className="text-sm text-slate-600 mb-2">
@@ -485,58 +494,60 @@ export default function TableCartPage() {
   useEffect(() => {
     if (!isCartLoading) {
       if (cartData && Array.isArray(cartData) && cartData.length > 0) {
-        // Get the first (and should be only) cart for this table
         const serverCart = cartData[0];
+
+        const cartItemsList = serverCart.cartItems || [];
+
         const transformedCart: Cart = {
           id: serverCart.id,
           tableId: serverCart.tableId,
           userId: 1,
           status: serverCart.status as "open" | "closed" | "cancelled",
-          items: serverCart.CartItems
-            ? serverCart.CartItems.filter(
-                (item) => item.Item || item.MenuItem
-              ).map((item) => {
-                const menu = item.Item || item.MenuItem;
-                return {
-                  id: item.id,
-                  cartId: item.cartId,
-                  itemId: item.itemId,
-                  quantity: item.quantity,
-                  rate: item.rate,
-                  totalPrice: item.totalPrice,
-                  notes: item.notes || "",
-                  menuItem: {
-                    id: menu.id,
-                    itemName: menu.itemName,
-                    categoryId: menu.categoryId,
-                    rate: menu.rate,
-                    description: menu.description,
-                    image: menu.image,
-                    isAvailable: menu.isAvailable,
-                    createdAt: menu.createdAt,
-                    updatedAt: menu.updatedAt,
-                    MenuCategory: {
-                      id: menu.categoryId,
-                      name: "",
-                      description: null,
-                      isActive: true,
-                      createdAt: "",
-                      updatedAt: "",
-                    },
+
+          items: cartItemsList
+            .filter((cartItem: any) => cartItem.item)
+            .map((cartItem: any) => {
+              const menu = cartItem.item;
+
+              return {
+                id: cartItem.id,
+                cartId: cartItem.cartId,
+                itemId: cartItem.itemId,
+                quantity: cartItem.quantity,
+                rate: cartItem.rate,
+                totalPrice: cartItem.totalPrice,
+                notes: cartItem.notes || "",
+                menuItem: {
+                  id: menu.id,
+                  itemName: menu.itemName,
+                  categoryId: menu.categoryId,
+                  rate: menu.rate,
+                  description: menu.description,
+                  image: menu.imageUrl,
+                  isAvailable: menu.isAvailable,
+                  createdAt: menu.createdAt,
+                  updatedAt: menu.updatedAt,
+                  MenuCategory: {
+                    id: menu.categoryId,
+                    name: "",
+                    description: null,
+                    isActive: true,
+                    createdAt: "",
+                    updatedAt: "",
                   },
-                };
-              })
-            : [],
+                },
+              };
+            }),
         };
+
         setCart(transformedCart);
       } else {
-        const emptyCart: Cart = {
-          tableId,
+        setCart({
+          tableId: tableId,
           userId: 1,
           status: "open",
           items: [],
-        };
-        setCart(emptyCart);
+        });
       }
     }
   }, [cartData, tableId, isCartLoading]);
@@ -672,7 +683,6 @@ export default function TableCartPage() {
       }
 
       const user = getUserFromLocalStorage();
-      console.log("User ID from localStorage:", user);
 
       const res = await axios.post(`${baseUrl}/cart`, parsed.data, {
         headers: user ? { userId: user.id, username: user.username } : {},

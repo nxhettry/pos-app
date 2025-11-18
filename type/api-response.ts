@@ -76,6 +76,7 @@ export type CartResponse = {
 };
 
 export interface Cart {
+  cartItems: never[];
   id?: number;
   tableId: number;
   createdBy: number | null;
