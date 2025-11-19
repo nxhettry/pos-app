@@ -38,11 +38,11 @@ function TableCard({ table }: { table: Table }) {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "available":
-        return <CheckCircle className="w-4 h-4" />;
+        return <CheckCircle className=" mainText w-4 h-4" />;
       case "occupied":
-        return <Users className="w-4 h-4" />;
+        return <Users className=" mainText w-4 h-4" />;
       case "reserved":
-        return <Clock className="w-4 h-4" />;
+        return <Clock className=" mainText w-4 h-4" />;
       default:
         return null;
     }
@@ -63,9 +63,11 @@ function TableCard({ table }: { table: Table }) {
       }`}
       onClick={handleTableClick}
     >
-      <CardContent className="p-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-lg text-slate-900">{table.name}</h3>
+      <CardContent className=" mainText p-4 space-y-3">
+        <div className=" mainText flex items-center justify-between">
+          <h3 className=" mainText font-semibold text-lg text-slate-900">
+            {table.name}
+          </h3>
           <Badge
             className={`${getStatusColor(
               table.status
@@ -76,18 +78,22 @@ function TableCard({ table }: { table: Table }) {
           </Badge>
         </div>
 
-        <div className="space-y-2 text-sm text-slate-600">
+        <div className=" mainText space-y-2 text-sm ">
           {table.status === "occupied" && table.currentGuests && (
-            <div className="flex items-center justify-between">
+            <div className=" mainText flex items-center justify-between">
               <span>Current:</span>
-              <span className="font-medium">{table.currentGuests} guests</span>
+              <span className=" mainText font-medium">
+                {table.currentGuests} guests
+              </span>
             </div>
           )}
 
           {table.status === "reserved" && table.reservedTime && (
-            <div className="flex items-center justify-between">
+            <div className=" mainText flex items-center justify-between">
               <span>Reserved:</span>
-              <span className="font-medium">{table.reservedTime}</span>
+              <span className=" mainText font-medium">
+                {table.reservedTime}
+              </span>
             </div>
           )}
         </div>
@@ -128,21 +134,23 @@ export default function TablesPage() {
   const statusCounts = getStatusCounts();
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className=" mainText min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="px-4 py-4">
-          <div className="flex items-center justify-between">
+      <div className=" mainText bg-white shadow-sm border-b">
+        <div className=" mainText px-4 py-4">
+          <div className=" mainText flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">Restrofuel</h1>
-              <p className="text-sm text-slate-600">
+              <h1 className=" mainText text-2xl font-bold text-slate-900">
+                Restrofuel
+              </h1>
+              <p className=" mainText text-sm ">
                 Welcome, {userData?.username}
               </p>
             </div>
             <Button
               variant="outline"
               onClick={handleLogout}
-              className="text-sm bg-transparent"
+              className=" mainText text-sm bg-transparent"
             >
               Logout
             </Button>
@@ -151,32 +159,32 @@ export default function TablesPage() {
       </div>
 
       {/* Status Summary */}
-      <div className="px-4 py-4">
-        <div className="grid grid-cols-3 gap-3">
-          <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
-            <div className="text-2xl font-bold text-green-800">
+      <div className=" mainText px-4 py-4">
+        <div className=" mainText grid grid-cols-3 gap-3">
+          <div className=" mainText bg-green-50 border border-green-200 rounded-lg p-3 text-center">
+            <div className=" mainText text-2xl font-bold text-green-800">
               {statusCounts.available}
             </div>
-            <div className="text-sm text-green-600">Available</div>
+            <div className=" mainText text-sm text-green-600">Available</div>
           </div>
-          <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-center">
-            <div className="text-2xl font-bold text-red-800">
+          <div className=" mainText bg-red-50 border border-red-200 rounded-lg p-3 text-center">
+            <div className=" mainText text-2xl font-bold text-red-800">
               {statusCounts.occupied}
             </div>
-            <div className="text-sm text-red-600">Occupied</div>
+            <div className=" mainText text-sm text-red-600">Occupied</div>
           </div>
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
-            <div className="text-2xl font-bold text-yellow-800">
+          <div className=" mainText bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
+            <div className=" mainText text-2xl font-bold text-yellow-800">
               {statusCounts.reserved}
             </div>
-            <div className="text-sm text-yellow-600">Reserved</div>
+            <div className=" mainText text-sm text-yellow-600">Reserved</div>
           </div>
         </div>
       </div>
 
       {/* Tables Grid */}
-      <div className="px-4 pb-20">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className=" mainText px-4 pb-20">
+        <div className=" mainText grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {tables?.map((table: Table) => (
             <TableCard key={table.id} table={table} />
           ))}
@@ -184,14 +192,14 @@ export default function TablesPage() {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-3">
-        <div className="flex justify-center">
+      <div className=" mainText fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-3">
+        <div className=" mainText flex justify-center">
           <Button
             variant="outline"
-            className="w-full max-w-xs bg-transparent flex items-center gap-2"
+            className=" mainText w-full max-w-xs bg-transparent flex items-center gap-2"
             onClick={() => setShowMenu(true)}
           >
-            <Menu className="w-4 h-4" />
+            <Menu className=" mainText w-4 h-4" />
             View Menu
           </Button>
         </div>

@@ -49,6 +49,7 @@
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
+  --color-main: #1a4b76;
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
@@ -119,4 +120,11 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.mainText {
+  color: var(--color-main);
+}
+.mainBg {
+  background-color: var(--color-main);
 }

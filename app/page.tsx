@@ -19,6 +19,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import axios from "axios";
 import { LoginResponse } from "@/type/api-response";
 import { getUserFromLocalStorage } from "@/lib/utils";
+import Image from "next/image";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -86,26 +87,34 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-3xl font-bold text-slate-900">
-            Restrofuel
+    <div className=" min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4 mainText">
+      <Card className="mainText w-full max-w-md">
+        <CardHeader className="mainText text-center space-y-2">
+          <CardTitle className="mainText w-full flex justify-center items-center">
+            <Image
+              src={"/logo.png"}
+              alt="Resrofuel Logo"
+              width={150}
+              height={50}
+              className="mainText scale-125"
+              draggable={false}
+            />
           </CardTitle>
-          <CardDescription className="text-slate-600">
-            Restaurant Management System
+          <CardDescription className="mainText text-lg">
+            "The fuel for your restaurant"
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Alert variant="default" className="mb-4">
+          <Alert variant="default" className="mainText mb-4">
             <AlertDescription>
-              <span className="font-medium">Info:</span> Please ensure{" "}
-              <span className="font-semibold">Tailscale VPN</span> is turned on
-              before logging in to use the restaurant system.
+              <span className="mainText font-medium">Info:</span> Please
+              ensure{" "}
+              <span className="mainText font-semibold">Tailscale VPN</span>{" "}
+              is turned on before logging in to use the restaurant system.
             </AlertDescription>
           </Alert>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
+          <form onSubmit={handleLogin} className="mainText space-y-4">
+            <div className="mainText space-y-2">
               <Label htmlFor="id">Username</Label>
               <Input
                 id="id"
@@ -115,13 +124,13 @@ export default function LoginPage() {
                 onChange={(e) =>
                   setCredentials((prev) => ({ ...prev, id: e.target.value }))
                 }
-                className="h-12"
+                className="mainText h-12"
                 disabled={isLoading}
               />
             </div>
 
-            <div className="space-y-2">
-              <div className="relative">
+            <div className="mainText space-y-2">
+              <div className="mainText relative">
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
@@ -134,20 +143,20 @@ export default function LoginPage() {
                       password: e.target.value,
                     }))
                   }
-                  className="h-12 pr-12"
+                  className="mainText h-12 pr-12"
                   disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => setViewPassword((prev) => !prev)}
                   tabIndex={-1}
-                  className="absolute inset-y-0 right-2 flex items-center px-2 text-slate-500 hover:text-slate-900 focus:outline-none"
+                  className="mainText absolute inset-y-0 right-2 flex items-center px-2 text-slate-500 hover:text-slate-900 focus:outline-none"
                   aria-label={viewPassword ? "Hide password" : "Show password"}
                 >
                   {viewPassword ? (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
+                      className="mainText h-5 w-5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -168,7 +177,7 @@ export default function LoginPage() {
                   ) : (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
+                      className="mainText h-5 w-5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -199,7 +208,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full h-12 text-lg font-semibold"
+              className="text-white mainBg w-full h-12 text-lg font-semibold"
               disabled={isLoading}
             >
               {isLoading ? "Signing In..." : "Sign In"}

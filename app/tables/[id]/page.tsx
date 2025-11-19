@@ -77,28 +77,28 @@ interface Cart {
 
 function CartSkeleton() {
   return (
-    <div className="px-4 py-4 space-y-4">
+    <div className="mainText px-4 py-4 space-y-4">
       {[1, 2, 3].map((i) => (
-        <Card key={i} className="mb-4">
-          <CardContent className="p-4">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex-1">
-                <Skeleton className="h-6 w-32 mb-2" />
-                <Skeleton className="h-4 w-20" />
+        <Card key={i} className="mainText mb-4">
+          <CardContent className="mainText p-4">
+            <div className="mainText flex items-start justify-between mb-3">
+              <div className="mainText flex-1">
+                <Skeleton className="mainText h-6 w-32 mb-2" />
+                <Skeleton className="mainText h-4 w-20" />
               </div>
-              <Skeleton className="h-8 w-8 rounded" />
+              <Skeleton className="mainText h-8 w-8 rounded" />
             </div>
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex items-center gap-2">
-                <Skeleton className="h-8 w-8" />
-                <Skeleton className="h-8 w-20" />
-                <Skeleton className="h-8 w-8" />
+            <div className="mainText flex items-center gap-3 mb-3">
+              <div className="mainText flex items-center gap-2">
+                <Skeleton className="mainText h-8 w-8" />
+                <Skeleton className="mainText h-8 w-20" />
+                <Skeleton className="mainText h-8 w-8" />
               </div>
-              <div className="flex-1 text-right">
-                <Skeleton className="h-6 w-16 ml-auto" />
+              <div className="mainText flex-1 text-right">
+                <Skeleton className="mainText h-6 w-16 ml-auto" />
               </div>
             </div>
-            <Skeleton className="h-16 w-full" />
+            <Skeleton className="mainText h-16 w-full" />
           </CardContent>
         </Card>
       ))}
@@ -118,14 +118,14 @@ function CartItemComponent({
   onRemove: (itemId: number) => void;
 }) {
   return (
-    <Card className="mb-4">
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex-1">
-            <h3 className="font-semibold text-lg text-slate-900">
+    <Card className="mainText mb-4">
+      <CardContent className="mainText p-4">
+        <div className="mainText flex items-start justify-between mb-3">
+          <div className="mainText flex-1">
+            <h3 className="mainText font-semibold text-lg text-slate-900">
               {item.menuItem.itemName}
             </h3>
-            <p className="text-sm text-slate-600">
+            <p className="mainText text-sm text-slate-600">
               रु. {item.rate.toFixed(2)} each
             </p>
           </div>
@@ -133,14 +133,14 @@ function CartItemComponent({
             variant="ghost"
             size="sm"
             onClick={() => onRemove(item.itemId)}
-            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+            className="mainText text-red-600 hover:text-red-700 hover:bg-red-50"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 className="mainText w-4 h-4" />
           </Button>
         </div>
 
-        <div className="flex items-center gap-3 mb-3">
-          <div className="flex items-center gap-2">
+        <div className="mainText flex items-center gap-3 mb-3">
+          <div className="mainText flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
@@ -149,7 +149,7 @@ function CartItemComponent({
               }
               disabled={item.quantity <= 1}
             >
-              <Minus className="w-4 h-4" />
+              <Minus className="mainText w-4 h-4" />
             </Button>
             <Input
               type="number"
@@ -160,7 +160,7 @@ function CartItemComponent({
                   Math.max(1, Number.parseInt(e.target.value) || 1)
                 )
               }
-              className="w-20 text-center"
+              className="mainText w-20 text-center"
               min="1"
             />
             <Button
@@ -168,11 +168,11 @@ function CartItemComponent({
               size="sm"
               onClick={() => onUpdateQuantity(item.itemId, item.quantity + 1)}
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="mainText w-4 h-4" />
             </Button>
           </div>
-          <div className="flex-1 text-right">
-            <span className="font-semibold text-lg">
+          <div className="mainText flex-1 text-right">
+            <span className="mainText font-semibold text-lg">
               रु. {item.totalPrice.toFixed(2)}
             </span>
           </div>
@@ -182,7 +182,7 @@ function CartItemComponent({
           placeholder="Special instructions or notes..."
           value={item.notes || ""}
           onChange={(e) => onUpdateNotes(item.itemId, e.target.value)}
-          className="resize-none"
+          className="mainText resize-none"
           rows={2}
         />
       </CardContent>
@@ -213,10 +213,10 @@ function AddItemModal({
 
   if (!menuData || !Array.isArray(menuData)) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-8">
-          <div className="text-center">
-            <div className="text-lg">Loading menu...</div>
+      <div className="mainText fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="mainText bg-white rounded-lg p-8">
+          <div className="mainText text-center">
+            <div className="mainText text-lg">Loading menu...</div>
           </div>
         </div>
       </div>
@@ -315,37 +315,41 @@ function AddItemModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-col z-50">
-      <div className="bg-white border-b">
-        <div className="px-4 py-4">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold text-slate-900">Add Items</h1>
+    <div className="mainText fixed inset-0 bg-black bg-opacity-50 flex flex-col z-50">
+      <div className="mainText bg-white border-b">
+        <div className="mainText px-4 py-4">
+          <div className="mainText flex items-center justify-between mb-4">
+            <h1 className="mainText text-2xl font-bold text-slate-900">
+              Add Items
+            </h1>
             <Button
               variant="ghost"
               size="sm"
               onClick={handleClose}
-              className="p-2"
+              className="mainText p-2"
             >
-              <X className="w-6 h-6" />
+              <X className="mainText w-6 h-6" />
             </Button>
           </div>
 
-          <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+          <div className="mainText relative mb-4">
+            <Search className="mainText absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
             <Input
               placeholder="Search items..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="mainText pl-10"
             />
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-2">
+          <div className="mainText flex gap-2 overflow-x-auto pb-2">
             <Button
               variant={selectedCategory === null ? "default" : "outline"}
               size="sm"
               onClick={() => setSelectedCategory(null)}
-              className="whitespace-nowrap"
+              className={` whitespace-nowrap${
+                selectedCategory === null ? " mainBg text-white" : "mainText"
+              }`}
             >
               All Categories (
               {allItems.filter((item) => item.isAvailable).length})
@@ -358,7 +362,11 @@ function AddItemModal({
                 }
                 size="sm"
                 onClick={() => setSelectedCategory(category.name)}
-                className="whitespace-nowrap"
+                className={`whitespace-nowrap${
+                  selectedCategory === category.name
+                    ? "mainBg text-white"
+                    : "mainText"
+                }`}
               >
                 {category.name} (
                 {category.items.filter((item) => item.isAvailable).length})
@@ -368,15 +376,15 @@ function AddItemModal({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-slate-50 px-4 py-4">
+      <div className="mainText flex-1 overflow-y-auto bg-slate-50 px-4 py-4">
         {filteredItems.length === 0 ? (
-          <div className="text-center py-12 text-slate-500">
+          <div className="mainText text-center py-12 text-slate-500">
             {searchQuery
               ? "No items match your search"
               : "No available items in this category"}
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="mainText space-y-3">
             {filteredItems.map((item) => {
               const quantity = selectedItems.get(item.id) || 0;
               const isSelected = quantity > 0;
@@ -391,32 +399,35 @@ function AddItemModal({
                   }`}
                   onClick={() => toggleItemSelection(item)}
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-lg text-slate-900">
+                  <CardContent className="mainText p-4">
+                    <div className="mainText flex items-start justify-between">
+                      <div className="mainText flex-1">
+                        <div className="mainText flex items-center gap-2 mb-1">
+                          <h3 className="mainText font-semibold text-lg text-slate-900">
                             {item.itemName}
                           </h3>
-                          {/* Display category name if available, helps when in "All" view */}
+
                           {item.MenuCategory?.name && (
-                            <Badge variant="secondary" className="text-xs">
+                            <Badge
+                              variant="secondary"
+                              className="mainText text-xs"
+                            >
                               {item.MenuCategory.name}
                             </Badge>
                           )}
                         </div>
                         {item.description && (
-                          <p className="text-sm text-slate-600 mb-2">
+                          <p className="mainText text-sm text-slate-600 mb-2">
                             {item.description}
                           </p>
                         )}
-                        <div className="text-lg font-bold text-slate-900">
+                        <div className="mainText text-lg font-bold text-slate-900">
                           रु. {item.rate.toFixed(2)}
                         </div>
                       </div>
 
                       {isSelected && (
-                        <div className="flex items-center gap-2 ml-4">
+                        <div className="mainText flex items-center gap-2 ml-4">
                           <Button
                             variant="outline"
                             size="sm"
@@ -428,9 +439,9 @@ function AddItemModal({
                               );
                             }}
                           >
-                            <Minus className="w-4 h-4" />
+                            <Minus className="mainText w-4 h-4" />
                           </Button>
-                          <span className="w-8 text-center font-semibold">
+                          <span className="mainText w-8 text-center font-semibold">
                             {quantity}
                           </span>
                           <Button
@@ -441,7 +452,7 @@ function AddItemModal({
                               updateQuantity(item.id, quantity + 1);
                             }}
                           >
-                            <Plus className="w-4 h-4" />
+                            <Plus className="mainText w-4 h-4" />
                           </Button>
                         </div>
                       )}
@@ -455,18 +466,18 @@ function AddItemModal({
       </div>
 
       {selectedItems.size > 0 && (
-        <div className="bg-white border-t p-4">
-          <div className="flex items-center justify-between mb-3">
+        <div className="mainText bg-white border-t p-4">
+          <div className="mainText flex items-center justify-between mb-3">
             <div>
-              <div className="text-sm text-slate-600">
+              <div className="mainText text-sm text-slate-600">
                 {getTotalItemCount()} items selected
               </div>
-              <div className="text-lg font-bold text-slate-900">
+              <div className="mainText text-lg font-bold text-slate-900">
                 रु. {getTotalAmount().toFixed(2)}
               </div>
             </div>
-            <Button onClick={handleAddToCart} size="lg">
-              <ShoppingCart className="w-4 h-4 mr-2" />
+            <Button className="mainBg" onClick={handleAddToCart} size="lg">
+              <ShoppingCart className=" w-4 h-4 mr-2" />
               Add to Cart
             </Button>
           </div>
@@ -716,26 +727,26 @@ export default function TableCartPage() {
   if (isCartLoading || !cart) {
     return (
       <AuthGuard>
-        <div className="min-h-screen bg-slate-50 pb-32">
+        <div className="mainText min-h-screen bg-slate-50 pb-32">
           {/* Header Skeleton */}
-          <div className="bg-white shadow-sm border-b sticky top-0 z-40">
-            <div className="px-4 py-4">
-              <div className="flex items-center gap-3">
+          <div className="mainText bg-white shadow-sm border-b sticky top-0 z-40">
+            <div className="mainText px-4 py-4">
+              <div className="mainText flex items-center gap-3">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => router.back()}
-                  className="p-2"
+                  className="mainText p-2"
                 >
-                  <ArrowLeft className="w-5 h-5" />
+                  <ArrowLeft className="mainText w-5 h-5" />
                 </Button>
-                <div className="flex-1">
-                  <h1 className="text-xl font-bold text-slate-900">
+                <div className="mainText flex-1">
+                  <h1 className="mainText text-xl font-bold text-slate-900">
                     Table {tableId}
                   </h1>
-                  <Skeleton className="h-4 w-32 mt-1" />
+                  <Skeleton className="mainText h-4 w-32 mt-1" />
                 </div>
-                <Skeleton className="h-8 w-20" />
+                <Skeleton className="mainText h-8 w-20" />
               </div>
             </div>
           </div>
@@ -749,30 +760,30 @@ export default function TableCartPage() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-slate-50 pb-32">
+      <div className="mainText min-h-screen bg-slate-50 pb-32">
         {/* Header */}
-        <div className="bg-white shadow-sm border-b sticky top-0 z-40">
-          <div className="px-4 py-4">
-            <div className="flex items-center gap-3">
+        <div className="mainText bg-white shadow-sm border-b sticky top-0 z-40">
+          <div className="mainText px-4 py-4">
+            <div className="mainText flex items-center gap-3">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => router.back()}
-                className="p-2"
+                className="mainText p-2"
               >
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="mainText w-5 h-5" />
               </Button>
-              <div className="flex-1">
-                <h1 className="text-xl font-bold text-slate-900">
+              <div className="mainText flex-1">
+                <h1 className="mainText text-xl font-bold text-slate-900">
                   Table {tableId}
                 </h1>
-                <p className="text-sm text-slate-600">
+                <p className="mainText text-sm text-slate-600">
                   {cart?.items?.length || 0} items • रु.{" "}
                   {getTotalAmount().toFixed(2)}
                 </p>
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="mainText flex flex-col gap-2">
                 <TransferOrderButton sourceTableId={tableId} />
                 <MergeOrderButton sourceTableId={tableId} />
               </div>
@@ -780,9 +791,9 @@ export default function TableCartPage() {
               <Button
                 onClick={() => setShowAddModal(true)}
                 size="sm"
-                className="bg-blue-600 hover:bg-blue-700"
+                className=" mainBg hover:bg-blue-700"
               >
-                <Plus className="w-4 h-4 mr-1" />
+                <Plus className=" w-4 h-4 mr-1" />
                 Add Item
               </Button>
             </div>
@@ -790,25 +801,28 @@ export default function TableCartPage() {
         </div>
 
         {/* Cart Items */}
-        <div className="px-4 py-4">
+        <div className="mainText px-4 py-4">
           {cart?.items?.length === 0 ? (
-            <Card className="text-center py-12">
+            <Card className="mainText text-center py-12">
               <CardContent>
-                <ShoppingCart className="w-16 h-16 mx-auto text-slate-400 mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                <ShoppingCart className="mainText w-16 h-16 mx-auto text-slate-400 mb-4" />
+                <h3 className="mainText text-lg font-semibold text-slate-900 mb-2">
                   No items ordered
                 </h3>
-                <p className="text-slate-600 mb-4">
+                <p className="mainText text-slate-600 mb-4">
                   This table hasn{"'"}t ordered anything yet.
                 </p>
-                <Button onClick={() => setShowAddModal(true)}>
+                <Button
+                  className="mainBg"
+                  onClick={() => setShowAddModal(true)}
+                >
                   <Plus className="w-4 h-4 mr-2" />
                   Add First Item
                 </Button>
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-4">
+            <div className="mainText space-y-4">
               {cart?.items?.map((item) => (
                 <CartItemComponent
                   key={item.itemId}
@@ -824,7 +838,7 @@ export default function TableCartPage() {
 
         {/* Save Message */}
         {saveMessage && (
-          <div className="fixed top-20 left-4 right-4 z-50">
+          <div className="mainText fixed top-20 left-4 right-4 z-50">
             <Alert
               className={
                 saveMessage.includes("success")
@@ -847,40 +861,42 @@ export default function TableCartPage() {
 
         {/* Bottom Save Bar */}
         {cart && cart.items?.length > 0 ? (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4">
-            <div className="flex items-center justify-between mb-3">
+          <div className="mainText fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4">
+            <div className="mainText flex items-center justify-between mb-3">
               <div>
-                <div className="text-sm text-slate-600">Total Amount</div>
-                <div className="text-2xl font-bold text-slate-900">
+                <div className="mainText text-sm text-slate-600">
+                  Total Amount
+                </div>
+                <div className="mainText text-2xl font-bold text-slate-900">
                   रु. {getTotalAmount().toFixed(2)}
                 </div>
               </div>
               <Badge
                 variant="outline"
-                className="bg-blue-50 text-blue-700 border-blue-200"
+                className="mainText bg-blue-50 text-blue-700 border-blue-200"
               >
                 {cart?.items?.length || 0} items
               </Badge>
             </div>
-            <div className="flex gap-2">
+            <div className="mainText flex gap-2">
               <Button
                 variant="outline"
                 onClick={() => setShowMenu(true)}
-                className="flex items-center gap-2"
+                className="mainText flex items-center gap-2"
               >
-                <Menu className="w-4 h-4" />
+                <Menu className="mainText w-4 h-4" />
                 Menu
               </Button>
               <Button
                 onClick={saveCart}
                 disabled={isSaving}
-                className="flex-1 h-12 text-lg font-semibold"
+                className="mainBg flex-1 h-12 text-lg font-semibold"
               >
                 {isSaving ? (
                   "Saving..."
                 ) : (
                   <>
-                    <Save className="w-5 h-5 mr-2" />
+                    <Save className="mainText w-5 h-5 mr-2" />
                     Save Order
                   </>
                 )}
@@ -888,13 +904,13 @@ export default function TableCartPage() {
             </div>
           </div>
         ) : (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4">
+          <div className="mainText fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4">
             <Button
               variant="outline"
-              className="w-full flex items-center gap-2 bg-transparent"
+              className="mainText w-full flex items-center gap-2 bg-transparent"
               onClick={() => setShowMenu(true)}
             >
-              <Menu className="w-4 h-4" />
+              <Menu className="mainText w-4 h-4" />
               View Menu
             </Button>
           </div>
