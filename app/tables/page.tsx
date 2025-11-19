@@ -10,6 +10,7 @@ import { Users, Clock, CheckCircle, Menu } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import useTables from "@/hooks/use-tables";
 import { TablesSkeleton } from "@/components/table-skeleton";
+import { toast } from "sonner";
 
 interface Table {
   id: number;

@@ -1,7 +1,7 @@
 {
-  "name": "Rato-POS",
-  "short_name": "Rato-POS",
-  "description": "Restaurant Point of Sale System",
+  "name": "RestroFuel",
+  "short_name": "RestroFuel",
+  "description": "The fuel for your restaurant",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
