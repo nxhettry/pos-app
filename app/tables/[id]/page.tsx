@@ -30,11 +30,7 @@ import { getUserFromLocalStorage } from "@/lib/utils";
 import { TransferOrderButton } from "./transfer-button";
 import { MergeOrderButton } from "./merge-button";
 
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-if (!baseUrl) {
-  throw new Error("API base URL is not defined");
-}
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 interface MenuItem {
   id: number;
@@ -51,6 +47,27 @@ interface MenuItem {
     name: string;
     description: string | null;
     isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+interface ServerCartItem {
+  id: number;
+  cartId: number;
+  itemId: number;
+  quantity: number;
+  rate: number;
+  totalPrice: number;
+  notes: string | null;
+  item: {
+    id: number;
+    itemName: string;
+    categoryId: number;
+    rate: number;
+    description: string | null;
+    imageUrl: string | null;
+    isAvailable: boolean;
     createdAt: string;
     updatedAt: string;
   };
@@ -516,8 +533,8 @@ export default function TableCartPage() {
           status: serverCart.status as "open" | "closed" | "cancelled",
 
           items: cartItemsList
-            .filter((cartItem: any) => cartItem.item)
-            .map((cartItem: any) => {
+            .filter((cartItem: ServerCartItem) => cartItem.item)
+            .map((cartItem: ServerCartItem) => {
               const menu = cartItem.item;
 
               return {

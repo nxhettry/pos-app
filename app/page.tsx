@@ -21,12 +21,7 @@ import { LoginResponse } from "@/type/api-response";
 import { getUserFromLocalStorage } from "@/lib/utils";
 import Image from "next/image";
 
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-if (!baseUrl)
-  throw new Error(
-    "NEXT_PUBLIC_API_BASE_URL is not defined in environment variables"
-  );
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 export default function LoginPage() {
   const [credentials, setCredentials] = useState({ id: "", password: "" });
@@ -50,6 +45,12 @@ export default function LoginPage() {
 
     if (!credentials.id || !credentials.password) {
       setError("Please enter both ID and password");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!baseUrl) {
+      setError("API configuration is missing. Please contact administrator.");
       setIsLoading(false);
       return;
     }
@@ -101,7 +102,7 @@ export default function LoginPage() {
             />
           </CardTitle>
           <CardDescription className="mainText text-lg">
-            "The fuel for your restaurant"
+            &quot;The fuel for your restaurant&quot;
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -5,12 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
 
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-if (!baseUrl)
-  throw new Error(
-    "NEXT_PUBLIC_API_BASE_URL is not defined in environment variables"
-  );
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 export default function useTables() {
   return useQuery({

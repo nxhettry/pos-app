@@ -18,11 +18,17 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   keywords: ["restaurant", "pos", "point of sale", "ordering"],
   authors: [{ name: "Rato-POS Team" }],
-  viewport:
-    "minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover",
   icons: {
     apple: "/icon-192x192.png",
   },
+};
+
+export const viewport = {
+  minimumScale: 1,
+  initialScale: 1,
+  width: "device-width",
+  shrinkToFit: "no",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
