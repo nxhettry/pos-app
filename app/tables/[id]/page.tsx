@@ -26,7 +26,7 @@ import useCart from "@/hooks/use-cart";
 import useMenu from "@/hooks/use-menu";
 import axios from "axios";
 import { CartItemSchema } from "@/schema/cart-schema";
-import { getUserFromLocalStorage } from "@/lib/utils";
+import { getAccessToken } from "@/lib/utils";
 import { TransferOrderButton } from "./transfer-button";
 import { MergeOrderButton } from "./merge-button";
 
@@ -710,10 +710,10 @@ export default function TableCartPage() {
         return;
       }
 
-      const user = getUserFromLocalStorage();
+      const token = getAccessToken();
 
       const res = await axios.post(`${baseUrl}/cart`, parsed.data, {
-        headers: user ? { userId: user.id, username: user.username } : {},
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
 
       if (res.status !== 200 && res.status !== 201) {

@@ -87,6 +87,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setIsLoggedIn(false);
     setUserData(null);
     localStorage.removeItem("posapp_user");
+    localStorage.removeItem("posapp_access_token");
+    localStorage.removeItem("posapp_refresh_token");
   };
 
   return (

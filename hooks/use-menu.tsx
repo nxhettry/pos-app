@@ -3,6 +3,7 @@ import { CategoryResponse, ItemResponse } from "@/type/api-response";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
+import { getAccessToken } from "@/lib/utils";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
@@ -11,12 +12,12 @@ export default function useMenu() {
     queryKey: ["menu"],
     queryFn: async () => {
       try {
-
-        axios.defaults.withCredentials = true;
+        const token = getAccessToken();
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
         const [categoriesRes, itemsRes] = await Promise.all([
-          axios.get<CategoryResponse>(`${baseUrl}/menu/categories/`),
-          axios.get<ItemResponse>(`${baseUrl}/menu/items/`),
+          axios.get<CategoryResponse>(`${baseUrl}/menu/categories/`, { headers }),
+          axios.get<ItemResponse>(`${baseUrl}/menu/items/`, { headers }),
         ]);
 
         const categories = categoriesRes.data.data;

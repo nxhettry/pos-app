@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  allowedDevOrigins: ["http://localhost:3000", "http://nishans-macbook-air-1.tail4a0a4d.ts.net:3000", "nishans-macbook-air-1.tail4a0a4d.ts.net"],
+  allowedDevOrigins: ["http://localhost:3000", "http://nishans-macbook-air-1.tail4a0a4d.ts.net:3000", "nishans-macbook-air-1.tail4a0a4d.ts.net", "192.168.1.75"],
 };
 
 export default nextConfig;

@@ -9,6 +9,10 @@ export type LoginResponse = {
       phone: string | null;
       isActive: boolean;
     };
+    tokens: {
+      accessToken: string;
+      refreshToken: string;
+    };
   };
   message: string;
   status: boolean;

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { toast } from "sonner";
 import useTables from "@/hooks/use-tables";
+import { getAccessToken } from "@/lib/utils";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -30,9 +31,12 @@ export function TransferOrderButton({
     setIsTransferring(true);
     setError("");
     try {
+      const token = getAccessToken();
       await axios.post(`${baseUrl}/cart/transfer-table`, {
         sourceTableId,
         targetTableId,
+      }, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       setShowConfirm(false);
       setShowTransferModal(false);

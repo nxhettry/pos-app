@@ -18,7 +18,6 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import axios from "axios";
 import { LoginResponse } from "@/type/api-response";
-import { getUserFromLocalStorage } from "@/lib/utils";
 import Image from "next/image";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
@@ -56,22 +55,21 @@ export default function LoginPage() {
     }
 
     try {
-      const userId = getUserFromLocalStorage();
-      axios.defaults.withCredentials = true;
       const response = await axios.post<LoginResponse>(
         `${baseUrl}/auth/login`,
         {
           username: credentials.id,
           password: credentials.password,
-        },
-        {
-          headers: userId ? { userId: userId.id } : {},
         }
       );
 
       if (response.status !== 200 && response.status !== 201) {
         throw new Error("Login failed. Please check your credentials.");
       }
+
+      // Store tokens
+      localStorage.setItem("posapp_access_token", response.data.data.tokens.accessToken);
+      localStorage.setItem("posapp_refresh_token", response.data.data.tokens.refreshToken);
 
       login({
         id: response.data.data.user.id,
